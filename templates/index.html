@@ -26,7 +26,14 @@
             <td>{{ m.angkatan }}</td>
             <td>{{ "%.2f"|format(m.ipk) }}</td>
             <td>{{ m.lama_studi }}</td>
-            <td><a href="/mahasiswa/{{ m.nim }}">Detail</a></td>
+                        <td>
+                <a href="/mahasiswa/{{ m.nim }}">Detail</a> |
+                <a href="/ubah/{{ m.nim }}">Ubah</a> |
+                <form action="/hapus/{{ m.nim }}" method="post" style="display:inline;"
+                      onsubmit="return confirm('Hapus data {{ m.nama }}?');">
+                    <button type="submit">Hapus</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>

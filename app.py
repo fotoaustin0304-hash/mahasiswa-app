@@ -146,7 +146,60 @@ def tambah():
     # GET, atau POST yang gagal validasi: form tampil lagi dengan isian lama
     return render_template("form.html", form=form, errors=errors, mode="tambah")
 
+@app.route("/ubah/<int:nim>", methods=["GET", "POST"])
+def ubah(nim):
+    conn = get_db()
+    row = conn.execute("SELECT * FROM mahasiswa WHERE nim = ?", (nim,)).fetchone()
 
+    if row is None:
+        conn.close()
+        abort(404)
+
+    errors = []
+    # GET: form diisi data lama dari database
+    form = {
+        "nim": str(row["nim"]),
+        "nama": row["nama"],
+        "program_studi": row["program_studi"],
+        "angkatan": str(row["angkatan"]),
+        "ipk": str(row["ipk"]),
+    }
+
+    if request.method == "POST":
+        form = {k: request.form.get(k, "").strip() for k in form}
+        # NIM dikunci: selalu pakai NIM dari URL, abaikan kiriman form
+        form["nim"] = str(nim)
+        errors, data = validasi_input(form)
+
+        if not errors:
+            conn.execute(
+                "UPDATE mahasiswa SET nama = ?, program_studi = ?, "
+                "angkatan = ?, ipk = ? WHERE nim = ?",
+                (data["nama"], data["program_studi"],
+                 data["angkatan"], data["ipk"], nim),
+            )
+            conn.commit()
+            conn.close()
+            return redirect(url_for("index"))
+
+    conn.close()
+    return render_template("form.html", form=form, errors=errors, mode="ubah")
+
+
+@app.route("/hapus/<int:nim>", methods=["POST"])
+def hapus(nim):
+    conn = get_db()
+    row = conn.execute("SELECT 1 FROM mahasiswa WHERE nim = ?", (nim,)).fetchone()
+
+    if row is None:
+        conn.close()
+        abort(404)
+
+    conn.execute("DELETE FROM mahasiswa WHERE nim = ?", (nim,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("index"))
+    
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
