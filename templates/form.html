@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ "Ubah" if mode == "ubah" else "Tambah" }} Mahasiswa</title>
+</head>
+<body>
+    <h1>{{ "Ubah" if mode == "ubah" else "Tambah" }} Mahasiswa</h1>
+
+    {% if errors %}
+    <ul style="color: red;">
+        {% for e in errors %}
+        <li>{{ e }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post">
+        <p>
+            <label>NIM:<br>
+            <input type="text" name="nim" value="{{ form.nim }}"
+                   {% if mode == "ubah" %}readonly{% endif %}></label>
+        </p>
+        <p>
+            <label>Nama:<br>
+            <input type="text" name="nama" value="{{ form.nama }}"></label>
+        </p>
+        <p>
+            <label>Program Studi:<br>
+            <input type="text" name="program_studi" value="{{ form.program_studi }}"></label>
+        </p>
+        <p>
+            <label>Angkatan:<br>
+            <input type="text" name="angkatan" value="{{ form.angkatan }}"></label>
+        </p>
+        <p>
+            <label>IPK:<br>
+            <input type="text" name="ipk" value="{{ form.ipk }}"></label>
+        </p>
+        <button type="submit">Simpan</button>
+        <a href="/">Batal</a>
+    </form>
+</body>
+</html>
