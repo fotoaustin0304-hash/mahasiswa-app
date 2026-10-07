@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Mahasiswa</title>
+</head>
+<body>
+    <h1>Detail Mahasiswa</h1>
+    <p>NIM: {{ m.nim }}</p>
+    <p>Nama: {{ m.nama }}</p>
+    <p>Program Studi: {{ m.program_studi }}</p>
+    <p>Angkatan: {{ m.angkatan }}</p>
+    <p>IPK: {{ "%.2f"|format(m.ipk) }}</p>
+    <p>Lama Studi: {{ m.lama_studi }} tahun</p>
+    <a href="/">Kembali ke daftar</a>
+</body>
+</html>

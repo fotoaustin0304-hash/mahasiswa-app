@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Mahasiswa</title>
+</head>
+<body>
+    <h1>Daftar Mahasiswa</h1>
+
+    {% if mahasiswa %}
+    <table border="1" cellpadding="6" cellspacing="0">
+        <tr>
+            <th>NIM</th>
+            <th>Nama</th>
+            <th>Program Studi</th>
+            <th>Angkatan</th>
+            <th>IPK</th>
+            <th>Lama Studi (tahun)</th>
+            <th>Aksi</th>
+        </tr>
+        {% for m in mahasiswa %}
+        <tr>
+            <td>{{ m.nim }}</td>
+            <td>{{ m.nama }}</td>
+            <td>{{ m.program_studi }}</td>
+            <td>{{ m.angkatan }}</td>
+            <td>{{ "%.2f"|format(m.ipk) }}</td>
+            <td>{{ m.lama_studi }}</td>
+            <td><a href="/mahasiswa/{{ m.nim }}">Detail</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Belum ada data mahasiswa.</p>
+    {% endif %}
+</body>
+</html>

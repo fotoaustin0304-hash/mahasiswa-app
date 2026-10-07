@@ -1,5 +1,6 @@
 import sqlite3
-from flask import Flask
+from datetime import datetime
+from flask import Flask, render_template, abort
 
 app = Flask(__name__)
 DB_NAME = "mahasiswa.db"
@@ -26,9 +27,38 @@ def init_db():
     conn.close()
 
 
+def hitung_lama_studi(angkatan):
+    # Dihitung otomatis, tidak disimpan di database
+    return datetime.now().year - angkatan
+
+
 @app.route("/")
 def index():
-    return "Aplikasi Data Mahasiswa berjalan!"
+    conn = get_db()
+    rows = conn.execute("SELECT * FROM mahasiswa ORDER BY nim").fetchall()
+    conn.close()
+
+    data = []
+    for r in rows:
+        m = dict(r)
+        m["lama_studi"] = hitung_lama_studi(m["angkatan"])
+        data.append(m)
+
+    return render_template("index.html", mahasiswa=data)
+
+
+@app.route("/mahasiswa/<int:nim>")
+def detail(nim):
+    conn = get_db()
+    row = conn.execute("SELECT * FROM mahasiswa WHERE nim = ?", (nim,)).fetchone()
+    conn.close()
+
+    if row is None:
+        abort(404)
+
+    m = dict(row)
+    m["lama_studi"] = hitung_lama_studi(m["angkatan"])
+    return render_template("detail.html", m=m)
 
 
 if __name__ == "__main__":
